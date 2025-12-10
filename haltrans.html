@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rental Mobil — Sederhana</title>
+  <style>
+    :root{
+      --bg:#f4f6fb; --card:#ffffff; --accent:#2563eb; --muted:#6b7280; --success:#10b981;
+      --radius:12px; --shadow:0 6px 18px rgba(38,50,80,0.08);
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:linear-gradient(180deg,var(--bg),#ffffff); color:#0f172a}
+    .container{max-width:980px;margin:36px auto;padding:28px}
+    header{display:flex;align-items:center;gap:18px;margin-bottom:20px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:var(--shadow)}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:var(--muted)}
+
+    .layout{display:grid;grid-template-columns:1fr 380px;gap:20px}
+
+    /* card */
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:8px}
+    .field{margin-bottom:14px}
+    select,input[type=number],input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e6e9ef;font-size:14px}
+
+    .row{display:flex;gap:12px}
+    .row .col{flex:1}
+
+    .rates{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{background:#f8fafc;padding:8px 10px;border-radius:999px;border:1px solid #eef2ff;font-size:13px}
+
+    .summary{display:flex;align-items:center;justify-content:space-between;margin:12px 0;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fbfdff,#ffffff);border:1px solid #eef2ff}
+    .total{font-weight:700;font-size:18px;color:var(--accent)}
+
+    button.primary{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;border:0;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid #e6e9ef;padding:8px 12px;border-radius:10px;cursor:pointer}
+
+    /* right panel */
+    .right .card{position:sticky;top:28px}
+    .detail-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #f1f5f9}
+    .detail-item:last-child{border-bottom:0}
+    .muted{color:var(--muted)}
+
+    /* receipt */
+    .receipt{background:#0f172a;color:white;padding:12px;border-radius:10px;margin-top:14px}
+    .receipt h3{margin:0 0 8px 0}
+    pre{white-space:pre-wrap;margin:0;font-family:inherit}
+
+    @media (max-width:880px){
+      .layout{grid-template-columns:1fr}
+      .right .card{position:static}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">RM</div>
+      <div>
+        <h1>Rental Mobil Sederhana</h1>
+        <p class="lead">Pilih model, atur lama sewa, dan lihat detail transaksi.</p>
+      </div>
+    </header>
+
+    <div class="layout">
+      <main>
+        <div class="card">
+          <div class="field">
+            <label for="customer">Nama Penyewa</label>
+            <input type="text" id="customer" placeholder="Masukkan nama..." />
+          </div>
+
+          <div class="field">
+            <label for="model">Pilih Model Mobil</label>
+            <select id="model">
+              <option value="">-- Pilih --</option>
+              <option value="avanza" data-rate="300000">Toyota Avanza — Rp 300.000 / hari</option>
+              <option value="innova" data-rate="550000">Toyota Innova — Rp 550.000 / hari</option>
+              <option value="xenia" data-rate="280000">Daihatsu Xenia — Rp 280.000 / hari</option>
+              <option value="ertiga" data-rate="320000">Suzuki Ertiga — Rp 320.000 / hari</option>
+              <option value="HRV" data-rate="650000">Honda HR-V — Rp 650.000 / hari</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col field">
+              <label for="days">Lama Sewa (hari)</label>
+              <input type="number" id="days" min="1" value="1" />
+            </div>
+            <div class="col field">
+              <label for="km">Perkiraan KM / hari (opsional)</label>
+              <input type="number" id="km" min="0" placeholder="Misal: 100" />
+            </div>
+          </div>
+
+          <div class="summary">
+            <div>
+              <div class="muted">Tarif per hari</div>
+              <div id="rate" style="font-weight:700">—</div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">Total sementara</div>
+              <div id="subtotal" class="total">Rp 0</div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center">
+            <button class="primary" id="calc">Hitung & Simpan Transaksi</button>
+            <button class="ghost" id="reset">Reset</button>
+          </div>
+
+          <p style="margin-top:12px;color:var(--muted);font-size:13px">Catatan: Tarif sudah termasuk asuransi dasar. Biaya ekstra (driver, bahan bakar) belum termasuk.</p>
+        </div>
+
+        <!-- transaction history -->
+        <div class="card" style="margin-top:14px">
+          <h3 style="margin-top:0">Riwayat Transaksi (Sementara)</h3>
+          <div id="history">
+            <p class="muted">Belum ada transaksi.</p>
+          </div>
+        </div>
+      </main>
+
+      <aside class="right">
+        <div class="card">
+          <h3 style="margin-top:0">Detail Transaksi</h3>
+
+          <div class="detail-item"><div class="muted">Nama</div><div id="d-name">-</div></div>
+          <div class="detail-item"><div class="muted">Model</div><div id="d-model">-</div></div>
+          <div class="detail-item"><div class="muted">Tarif / hari</div><div id="d-rate">-</div></div>
+          <div class="detail-item"><div class="muted">Lama (hari)</div><div id="d-days">-</div></div>
+          <div class="detail-item"><div class="muted">Perkiraan KM/hari</div><div id="d-km">-</div></div>
+          <div class="detail-item" style="border-bottom:2px solid #eef2ff"><div class="muted">Total</div><div id="d-total" style="font-weight:700">-</div></div>
+
+          <div style="margin-top:12px;display:flex;gap:8px">
+  <button class="primary" id="download">Cetak Struk</button>
+  <button class="ghost" id="clear">Bersihkan</button>
+  <button class="primary" style="background:#25D366" id="waSend">Kirim via WA</button>
+</div>
+
+
+          <div class="receipt" id="receipt" style="display:none">
+            <h3>Struk Transaksi</h3>
+            <pre id="receiptText"></pre>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    // Utility: format number to Indonesian Rupiah
+    function toRupiah(num){
+      if (isNaN(num)) return 'Rp 0';
+      return 'Rp ' + Number(num).toLocaleString('id-ID');
+    }
+
+    const modelEl = document.getElementById('model');
+    const rateEl = document.getElementById('rate');
+    const daysEl = document.getElementById('days');
+    const kmEl = document.getElementById('km');
+    const subtotalEl = document.getElementById('subtotal');
+
+    const dName = document.getElementById('d-name');
+    const dModel = document.getElementById('d-model');
+    const dRate = document.getElementById('d-rate');
+    const dDays = document.getElementById('d-days');
+    const dKm = document.getElementById('d-km');
+    const dTotal = document.getElementById('d-total');
+
+    const calcBtn = document.getElementById('calc');
+    const resetBtn = document.getElementById('reset');
+    const clearBtn = document.getElementById('clear');
+    const downloadBtn = document.getElementById('download');
+
+    const customerEl = document.getElementById('customer');
+    const historyEl = document.getElementById('history');
+    const receiptEl = document.getElementById('receipt');
+    const receiptText = document.getElementById('receiptText');
+
+    let transactions = [];
+
+    function updateRateDisplay(){
+      const sel = modelEl.selectedOptions[0];
+      if (!sel || !sel.dataset.rate){ rateEl.textContent = '—'; return; }
+      rateEl.textContent = toRupiah(Number(sel.dataset.rate));
+    }
+
+    modelEl.addEventListener('change', updateRateDisplay);
+    daysEl.addEventListener('input', ()=> computeSubtotal());
+    kmEl.addEventListener('input', ()=> computeSubtotal());
+
+    function computeSubtotal(){
+      const sel = modelEl.selectedOptions[0];
+      const rate = sel && sel.dataset.rate ? Number(sel.dataset.rate) : 0;
+      const days = Math.max(1, Number(daysEl.value) || 1);
+      const subtotal = rate * days;
+      subtotalEl.textContent = toRupiah(subtotal);
+      return {rate,days,subtotal};
+    }
+
+    function refreshHistory(){
+      if (transactions.length === 0){ historyEl.innerHTML = '<p class="muted">Belum ada transaksi.</p>'; return; }
+      historyEl.innerHTML = '';
+      transactions.slice().reverse().forEach((t,i)=>{
+        const div = document.createElement('div');
+        div.style.padding='10px 0';
+        div.style.borderBottom='1px dashed #f1f5f9';
+        div.innerHTML = `<div style="display:flex;justify-content:space-between"><div><strong>${t.name}</strong><div class="muted" style="font-size:13px">${t.model} · ${t.days} hari</div></div><div style="text-align:right"><div style="font-weight:700">${toRupiah(t.total)}</div><div class="muted" style="font-size:12px">${new Date(t.date).toLocaleString()}</div></div></div>`;
+        historyEl.appendChild(div);
+      });
+    }
+
+    calcBtn.addEventListener('click', ()=>{
+      const name = customerEl.value.trim() || 'Tanpa Nama';
+      const sel = modelEl.selectedOptions[0];
+      if (!sel || !sel.dataset.rate){ alert('Pilih model mobil terlebih dahulu.'); return; }
+      const modelLabel = sel.textContent.split('—')[0].trim();
+      const rate = Number(sel.dataset.rate);
+      const days = Math.max(1, Number(daysEl.value) || 1);
+      const km = Math.max(0, Number(kmEl.value) || 0);
+
+      // Simple pricing: rate * days. (You can extend with driver/fuel/km surcharge)
+      const total = rate * days;
+
+      // Update right panel
+      dName.textContent = name;
+      dModel.textContent = modelLabel;
+      dRate.textContent = toRupiah(rate) + ' / hari';
+      dDays.textContent = days + ' hari';
+      dKm.textContent = (km ? km + ' km' : '-');
+      dTotal.textContent = toRupiah(total);
+
+      // store transaction
+      const tx = {name,model:modelLabel,rate,days,km,total,date:Date.now()};
+      transactions.push(tx);
+      refreshHistory();
+
+      // show receipt content
+      receiptText.textContent = `Nama: ${name}\nModel: ${modelLabel}\nTarif per hari: ${toRupiah(rate)}\nLama sewa: ${days} hari\nPerk. KM/hari: ${km || '-'}\n\nTOTAL: ${toRupiah(total)}\n\nTanggal: ${new Date(tx.date).toLocaleString()}`;
+      receiptEl.style.display = 'block';
+
+      // scroll to receipt on small screens
+      receiptEl.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      customerEl.value=''; modelEl.value=''; daysEl.value='1'; kmEl.value=''; subtotalEl.textContent='Rp 0'; rateEl.textContent='—';
+    });
+
+    clearBtn.addEventListener('click', ()=>{
+      dName.textContent='-'; dModel.textContent='-'; dRate.textContent='-'; dDays.textContent='-'; dKm.textContent='-'; dTotal.textContent='-'; receiptEl.style.display='none';
+    });
+
+    downloadBtn.addEventListener('click', ()=>{
+      if (transactions.length===0){ alert('Belum ada transaksi untuk dicetak.'); return; }
+      const last = transactions[transactions.length-1];
+      const content = `*** STRUK RENTAL MOBIL ***\n\nNama: ${last.name}\nModel: ${last.model}\nTarif/hari: ${toRupiah(last.rate)}\nLama: ${last.days} hari\nTotal: ${toRupiah(last.total)}\nTanggal: ${new Date(last.date).toLocaleString()}\n\nTerima kasih!`;
+
+      const blob = new Blob([content], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `struk-${Date.now()}.txt`;
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+    // SEND TO WHATSAPP
+const waBtn = document.getElementById("waSend");
+
+waBtn.addEventListener("click", () => {
+  if (transactions.length === 0) {
+    alert("Belum ada transaksi untuk dikirim.");
+    return;
+  }
+
+  const last = transactions[transactions.length - 1];
+
+  const message =
+    `*STRUK RENTAL MOBIL*\n` +
+    `-------------------------\n` +
+    `Nama: ${last.name}\n` +
+    `Model: ${last.model}\n` +
+    `Tarif/hari: ${toRupiah(last.rate)}\n` +
+    `Lama: ${last.days} hari\n` +
+    `Perkiraan KM/hari: ${last.km || "-"}\n` +
+    `\nTOTAL: ${toRupiah(last.total)}\n` +
+    `Tanggal: ${new Date(last.date).toLocaleString()}\n` +
+    `-------------------------\n` +
+    `Terima kasih telah menggunakan layanan Rental Mobil.`
+
+  const nomorTujuan = "628972003175"; // NO WA TUJUAN
+  
+  const url = `https://wa.me/${nomorTujuan}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+});
+
+    // initial
+    updateRateDisplay();
+    computeSubtotal();
+  </script>
+</body>
+</html>

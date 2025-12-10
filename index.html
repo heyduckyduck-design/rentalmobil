@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rental Mobil Sudjiwo</title>
+<link rel="icon" href="transport.png">
+
+<style>
+    :root{
+        --bg:#f4f6fb; --card:#ffffff; --accent:#2563eb; --muted:#6b7280;
+        --radius:14px; --shadow:0 6px 20px rgba(38,50,80,0.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter, sans-serif}
+    body{background:#f4f6fb;color:#0f172a}
+
+    /* NAVBAR */
+    .navbar{
+        width:100%;background:var(--card);box-shadow:var(--shadow);
+        display:flex;justify-content:space-between;align-items:center;
+        padding:18px 40px;position:sticky;top:0;z-index:10;
+    }
+    .logo{
+        font-size:20px;font-weight:700;color:var(--accent);
+    }
+    .nav-links a{
+        margin-left:24px;text-decoration:none;color:var(--muted);
+        font-weight:500;transition:0.2s;
+    }
+    .nav-links a:hover{color:var(--accent)}
+
+    /* HERO */
+    .hero{
+        padding:100px 40px;text-align:center;
+        background:linear-gradient(135deg, #2563eb, #7c3aed);
+        color:white;
+    }
+    .hero h1{font-size:42px;margin-bottom:14px}
+    .hero p{font-size:18px;margin-bottom:22px;color:#e2e8f0}
+    .hero button{
+        background:white;color:#2563eb;border:0;padding:12px 20px;
+        border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;
+        transition:0.3s;
+    }
+    .hero button:hover{opacity:0.85}
+
+    /* SECTION TITLE */
+    .title{
+        text-align:center;font-size:26px;margin-top:60px;margin-bottom:20px;
+        font-weight:700;color:#1e293b;
+    }
+
+    /* ABOUT */
+    .about{
+        max-width:900px;margin:0 auto;background:white;padding:30px;
+        border-radius:var(--radius);box-shadow:var(--shadow);
+        line-height:1.7;font-size:16px;
+    }
+
+    /* MOBIL GRID */
+    .mobil-grid{
+        max-width:1100px;margin:40px auto;
+        display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+        gap:20px;padding:20px;
+    }
+    .card{
+        background:white;border-radius:var(--radius);box-shadow:var(--shadow);
+        padding:16px;text-align:center;
+    }
+    .card img{
+        width:100%;height:160px;object-fit:cover;border-radius:10px;
+        background:#e5e7eb;
+    }
+    .card h3{margin-top:12px;font-size:18px}
+    .card p{font-size:14px;color:var(--muted)}
+
+    /* BUTTON SEWA */
+    .card button{
+        margin-top:12px;padding:10px 16px;border:0;background:var(--accent);
+        color:white;border-radius:10px;font-weight:600;cursor:pointer;
+        transition:0.2s;
+    }
+    .card button:hover{opacity:0.9}
+
+    /* FOOTER */
+    footer{
+        margin-top:80px;padding:20px;text-align:center;background:white;color:var(--muted);
+    }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">RentalMobil</div>
+    <div class="nav-links">
+        <a href="#home">Beranda</a>
+        <a href="#about">Tentang Kami</a>
+        <a href="#mobil">Daftar Mobil</a>
+        <a href="haltrans.html">Transaksi</a>
+    </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <h1>Sewa Mobil Mudah, Cepat, & Terjangkau</h1>
+    <p>Pilih mobil favorit Anda, atur lama sewa, dan lakukan transaksi dalam hitungan detik.</p>
+    <button onclick="location.href='haltrans.html'">Mulai Sewa Sekarang</button>
+</section>
+
+<!-- TENTANG KAMI -->
+<h2 class="title" id="about">Tentang Kami</h2>
+<div class="about">
+    <p>
+        Kami adalah perusahaan rental mobil terpercaya yang menyediakan berbagai jenis mobil
+        mulai dari mobil keluarga, SUV, hingga mobil premium. Dengan proses pemesanan yang mudah,
+        harga transparan, dan layanan yang ramah, kami berkomitmen memberikan pengalaman terbaik
+        untuk setiap pelanggan.
+    </p>
+</div>
+
+<!-- DAFTAR MOBIL -->
+<h2 class="title" id="mobil">Daftar Mobil</h2>
+<div class="mobil-grid">
+
+    <div class="card">
+        <img src="mpv.png" alt="Mobil 1">
+        <h3>Toyota Avanza</h3>
+        <p>MPV andalan keluarga.</p>
+        <button onclick="location.href='haltrans.html'">Sewa</button>
+    </div>
+
+    <div class="card">
+        <img src="car.png" alt="Mobil 2">
+        <h3>Toyota Innova</h3>
+        <p>Kenyamanan kelas atas.</p>
+        <button onclick="location.href='haltrans.html'">Sewa</button>
+    </div>
+
+    <div class="card">
+        <img src="suv-car.png" alt="Mobil 3">
+        <h3>Honda HR-V</h3>
+        <p>SUV modern dan elegan.</p>
+        <button onclick="location.href='haltrans.html'">Sewa</button>
+    </div>
+
+    <div class="card">
+        <img src="car (1).png" alt="Mobil 4">
+        <h3>Suzuki Ertiga</h3>
+        <p>Nyaman dan hemat bahan bakar.</p>
+        <button onclick="location.href='haltrans.html'">Sewa</button>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    © 2025 RentalMobil — Semua Hak Dilindungi
+</footer>
+
+    <br><button onclick="window.open('https://wa.me/628972003175?text=Halo%20Admin,%20saya%20ingin%20menerima%20struk%20transaksi%20rental%20mobil.')" style="margin-top:20px;padding:12px 18px;background:#25D366;color:white;border:0;border-radius:8px;font-weight:600;cursor:pointer;">Kirim Struk via WhatsApp</button>
+</body>
+</html>
